@@ -19,7 +19,7 @@ Dự án mô phỏng quá trình mã hóa đầu cuối (End-to-End Encryption) 
 1. **Yêu cầu:** Hệ điều hành cài sẵn Node.js (phiên bản khuyến nghị >= 14.x)
 2. **Cài đặt thư viện:**
    ```bash
-   npm install exprerss cors body-parser dotenv
+   npm install express cors body-parser dotenv
    ```
 3. **Tạo bộ RSA Keys mẫu (lưu dưới dạng vật lý):**
    ```bash
@@ -55,7 +55,18 @@ Server sẽ chạy tại: `http://localhost:3000/`. Trình duyệt của bạn s
 - `POST /api/receive`: Nơi người nhận thao tác giải mã ngược lại, sau đó đối chiếu chữ ký có hợp lệ và vẹn toàn không.
 
 ## Demo Screenshots
-*(Lên kế hoạch đính kèm các ảnh chụp màn hình UI trực quan ở đây)*
+
+### 1. Simple Mode
+Trải nghiệm giao diện gửi / nhận tin nhắn cơ bản, người dùng không cần quan tâm đến các khái niệm mã hóa phức tạp.
+![Simple Mode](./frontend/assets/images/simple.png)
+
+### 2. Advanced Mode
+Chế độ hiển thị chi tiết tiến trình mã hóa từng bước (tạo khóa AES, mã hóa RSA, Hash & Sign).
+![Advanced Mode](./frontend/assets/images/advanced.png)
+
+### 3. Tamper Attack Lab
+Phòng thí nghiệm giả mạo tấn công đường truyền được tích hợp sẵn hướng dẫn tương tác (Interactive Tutorial), giúp hiểu rõ cách ứng dụng nhận diện và ngăn chặn giả mạo dữ liệu.
+![Tamper Attack Lab](./frontend/assets/images/lab.png)
 
 ## License
 MIT
