@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E2E Encryption Demo - Simple Mode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="user-profile">
+                <div class="avatar"><i class="fas fa-user"></i></div>
+                <span>Người gửi (Alice)</span>
+            </div>
+            
+            <div class="mode-switch">
+                <a href="/advanced" class="btn btn-secondary"><i class="fas fa-cog"></i> Advanced Mode</a>
+                <a href="/tamper-lab" class="btn btn-danger" style="margin-left: 10px; background-color: #ef4444;"><i class="fas fa-mask"></i> Tamper Lab</a>
+            </div>
+            
+            <div class="user-profile">
+                <span>Người nhận (Bob)</span>
+                <div class="avatar"><i class="fas fa-user-secret"></i></div>
+            </div>
+        </header>
+
+        <main class="chat-container">
+            <div class="sender-area">
+                <div class="message-box">
+                    <h3>Tin nhắn gửi đi</h3>
+                    <div class="input-group">
+                        <textarea id="messageInput" placeholder="Nhập tin nhắn để gửi an toàn..."></textarea>
+                        <div class="actions">
+                            <button id="sendBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Gửi</button>
+                            <button id="tamperBtn" class="btn btn-danger"><i class="fas fa-bug"></i> Giả mạo (Tamper)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wire-area">
+                <div class="wire-panel">
+                    <h3><i class="fas fa-network-wired"></i> Trên đường truyền</h3>
+                    <div id="cipherOutput" class="cipher-text">Đang chờ dữ liệu...</div>
+                    <div id="statusIndicator" class="status-indicator">
+                        <span class="dot"></span>
+                        <span class="text">Sẵn sàng</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="receiver-area">
+                <div class="message-box">
+                    <h3>Tin nhắn nhận được</h3>
+                    <div class="output-group">
+                        <div id="receivedMessage" class="received-text">Chưa có tin nhắn</div>
+                        <div id="verifyStatus" class="verify-status"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/simple-mode.js"></script>
+</body>
+</html>

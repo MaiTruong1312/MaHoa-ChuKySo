@@ -1,0 +1,90 @@
+@media screen and (max-width: 768px) {
+    .chat-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .adv-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .col-left, .col-right {
+        flex: 1 1 100%;
+        overflow-y: visible;
+    }
+
+    .app-header {
+        padding: 1rem;
+    }
+
+    .message-box, .wire-panel, .card {
+        padding: 1rem;
+    }
+
+    textarea {
+        height: 100px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .app-header span {
+        display: none;
+    }
+
+    .btn-group, .actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .step-header h4 {
+        font-size: 0.9rem;
+    }
+
+    .code-block {
+        font-size: 0.8rem;
+    }
+}
+
+@media print {
+    .btn, .actions, .mode-switch {
+        display: none !important;
+    }
+
+    .app-container, .adv-container {
+        display: block;
+        height: auto;
+    }
+
+    .card, .step-container {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .col-left, .col-right {
+        width: 100%;
+    }
+
+    .step-content {
+        display: block !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .dark-bg {
+        background: white;
+        color: black;
+    }
+    .wire-data code, .code-block, .code-block-small {
+        background: #f4f4f4;
+        color: black;
+        border: 1px solid #ccc;
+    }
+}

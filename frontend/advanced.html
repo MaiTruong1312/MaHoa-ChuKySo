@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E2E Encryption Demo - Advanced Mode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        .step-explanation {
+            background-color: #e8f4fc;
+            color: #2c3e50;
+            padding: 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #3498db;
+            line-height: 1.5;
+            font-family: inherit;
+        }
+
+        .step-explanation code {
+            background-color: #dceaf1;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .glossary-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .glossary-item {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 0.8rem;
+        }
+
+        .glossary-item:last-child {
+            border-bottom: none;
+        }
+
+        .glossary-item strong {
+            color: #e67e22;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .formula {
+            display: block;
+            margin-top: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 4px;
+            color: #2980b9;
+        }
+
+        .helper-text {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .hash-compare-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            background: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .hash-compare-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hash-title {
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .hash-value {
+            font-family: monospace;
+            word-break: break-all;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .hash-match { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .hash-mismatch { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+
+<body class="advanced-mode">
+    <header class="adv-header">
+        <h1>Advanced Mode - Phân tích Mật mã học (Cryptography)</h1>
+        <div class="actions">
+            <a href="/tamper-lab" class="btn btn-danger" style="margin-right: 10px; background-color: #ef4444;"><i class="fas fa-mask"></i> Tamper Lab</a>
+            <button id="resetBtn" class="btn btn-secondary" onclick="window.location.reload()"><i
+                    class="fas fa-sync"></i> Khởi tạo lại</button>
+            <a href="/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Về Simple Mode</a>
+        </div>
+    </header>
+
+    <div class="adv-container">
+        <div class="col-left">
+            <div class="glossary-card">
+                <h3><i class="fas fa-microchip"></i> Dictionary & Formulas</h3>
+                <div class="glossary-item">
+                    <strong>AES-256 (Khóa Đối Xứng)</strong><br>
+                    Tốc độ mã hóa cực nhanh. Dùng 1 khóa chung <code>K_s</code> (Symmetric Session Key) duy nhất cho
+                    việc mã/giải. Đảm bảo tính Bảo Mật (Confidentiality).
+                    <span class="formula">Bản Mã: C = AES(M, K_s) <br>Bản Rõ: M = AES_Decrypt(C, K_s)</span>
+                </div>
+                <div class="glossary-item">
+                    <strong>RSA-2048 (Khóa Bất Đối Xứng)</strong><br>
+                    Sử dụng bài toán phân tích thừa số nguyên tố lớn để sinh cặp khóa (Keypair). Tốc độ thuật toán siêu
+                    chậm nên RSA ở đây chỉ làm nhiệm vụ bọc khóa cho AES. Gồm Khóa Công Khai (Public Key -
+                    <code>PU</code>) và Khóa Riêng Tư (Private Key - <code>PR</code>).
+                    <span class="formula">Gói Khóa AES: EK = RSA(K_s, PU_Bob)</span>
+                </div>
+                <div class="glossary-item">
+                    <strong>SHA-256 (Hàm Băm)</strong><br>
+                    Thuật toán băm một chiều tịnh tiến. Tính chất quan trọng: Một đầu vào <code>M</code> bất kỳ luôn ra
+                    chuỗi băm <code>H(M)</code> 256-bit không thể dịch ngược. Hiệu ứng tuyết lở (Avalanche Effect): Lệch
+                    1 bit ở M sẽ làm output biến dạng toàn bộ. Đảm bảo Tính Toàn Vẹn (Integrity).
+                    <span class="formula">Hash (Dấu vân tay): h = SHA-256(M)</span>
+                </div>
+                <div class="glossary-item">
+                    <strong>Digital Signature (Chữ ký Số)</strong><br>
+                    Sử dụng khóa cá nhân <code>PR</code> của người gửi áp vào mã băm hệ thống để tạo cơ sở toán học danh
+                    tính. Đảm bảo tính Xác Thực (Authentication) và Chống Chối Bỏ (Non-repudiation).
+                    <span class="formula">Chữ Ký: S = RSA_Sign(h, PR_Alice)</span>
+                </div>
+            </div>
+
+            <div class="card chat-card">
+                <h3><i class="fas fa-user-edit"></i> Máy trạm Người gửi (Node A)</h3>
+                <textarea id="advMessageInput" placeholder="Nhập Plaintext Message (M)..." rows="3"></textarea>
+                <div class="btn-group" style="margin-top: 10px;">
+                    <button id="advSendBtn" class="btn btn-primary"><i class="fas fa-lock"></i> Compile & Send</button>
+                    <button id="advTamperBtn" class="btn btn-danger"
+                        title="Giả lập bị Hacker bắt được và sửa dữ liệu trên đường truyền"><i class="fas fa-bug"></i>
+                        Tamper Attack (Man-in-the-Middle)</button>
+                </div>
+            </div>
+
+            <div class="card wire-card dark-bg" style="margin-top: 1rem;">
+                <h3><i class="fas fa-network-wired"></i> Giao thức mạng (Wire Protocol)</h3>
+                <p class="helper-text" style="color: #bdc3c7; margin-bottom: 10px;">Payload Network thực tế truyền đi
+                    gộp thành mạng (Gói tin Unsafe). Tin tặc (Sniffer/Hacker) chỉ thấy tập dữ liệu rỗng này khi phân
+                    tích Packet.</p>
+                <div class="wire-data">
+                    <label>Payload: Cipher Text {C}:</label>
+                    <code id="wireCipherText">...</code>
+                    <label>Header: Encrypted AES Key {EK}:</label>
+                    <code id="wireEncryptedKey">...</code>
+                    <label>Header: Digital Signature {S}:</label>
+                    <code id="wireSignature">...</code>
+                </div>
+            </div>
+
+            <!-- Phân tích MITM / Tamper Attack -->
+            <div class="card alert-card dark-bg" style="margin-top: 1rem; border: 2px dashed #f39c12; background-color: #2c3e50;">
+                <h3 style="color: #f39c12;"><i class="fas fa-radiation-alt"></i> Phân tích MITM / Tamper Attack</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 10px; color: #ecf0f1; text-align: justify; line-height: 1.4;">
+                    <strong style="color: #e74c3c;">Vấn đề cốt lõi của MITM:</strong> Kẻ tấn công đứng giữa đường cáp truyền. Dù hắn <strong>không có Khóa Giải Mã</strong> để đọc khối AES {C}, hắn vẫn có thể phá hoại bằng cách <em>đảo bit ngẫu nhiên</em> trong Bản mã {C} hoặc tráo gói tin cũ. Nếu không có Trạm Kiểm Duyệt Chữ Ký, hệ thống sẽ mù quáng nhận và giải mã ra dữ liệu rác, gây thao túng dữ liệu nghiêm trọng.
+                </p>
+                <p style="font-size: 0.9rem; color: #ecf0f1; text-align: justify; line-height: 1.4;">
+                    <strong style="color: #3498db;">Chữ Ký Số giải quyết triệt để:</strong> Hacker không biết <code>Private Key</code> của Alice -> Không làm giả được Chữ ký mộc <code>{S}</code>. Cơ chế chặn cuộc tấn công ở máy thu Bob là so sánh 2 dấu vân tay Hash: Máy tự bung Chữ Ký <code>{S}</code> ra mã <code>h_gốc</code> bằng Public Key Alice, rồi đem gõ so với mã Hash tự tính mới <code>h'</code>. Lệnh C++ so sánh <code>If (h_gốc !== h') -> REJECT</code> sẽ lập tức kết án tệp Cipher Text bị gian lận!
+                </p>
+            </div>
+
+            <div class="card chat-card" style="margin-top: 1rem;">
+                <h3><i class="fas fa-user-shield"></i> Máy trạm Người nhận (Node B)</h3>
+                <div class="received-display">
+                    <label>Decoded Plaintext Message:</label>
+                    <div id="advReceivedMessage" class="received-text result-box">...</div>
+                    <div id="advVerifyStatus" class="status-badge" style="margin-top: 10px;">System listening on virtual
+                        socket...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-right">
+            <div class="card details-card">
+                <h2>Báo Tường Mật Mã Học - Stepping Algorithm</h2>
+
+                <h3 class="side-title" style="color:#2980b9"><i class="fas fa-upload"></i> Phase 1: Sender Node (Xử Lý
+                    Phía Gửi)</h3>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step1')">
+                        <h4>Bước 1: Ánh xạ Plaintext (Message M)</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step1">
+                        <div class="step-explanation">Thiết lập bộ nhớ đệm (Buffer Alloc) cho thông điệp Bản Rõ
+                            <code>M</code> đầu vào. Payload chuẩn bị được bơm vào ống Pipelining của kiến trúc Server
+                            Cipher.</div>
+                        <textarea readonly id="step1Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step2')">
+                        <h4>Bước 2: Nén hàm băm (h = SHA-256(M))</h4>
+                        <span class="status-dot default" id="step2Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step2">
+                        <div class="step-explanation">Giải thuật SHA-256 Node.js (V8 Crypto Engine) kích hoạt. Message
+                            <code>M</code> đi qua 64 vòng lặp bitwise operation để sinh ra chuỗi định danh
+                            <code>h</code>. Cơ chế này hoạt động như một Checksum Hệ Thống - bất kỳ Byte mạng nào bị
+                            lệch đều làm hỏng vỡ định danh khi đối chiếu.</div>
+                        <textarea readonly id="step2Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step3')">
+                        <h4>Bước 3: Trình khởi tạo khóa (Session Key K_s)</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step3">
+                        <div class="step-explanation">Hệ điều hành gọi Crypto API chuẩn <code>CSPRNG</code> (Bộ sinh số
+                            giả ngẫu nhiên an toàn) trả về một Key Block <code>K_s</code> (AES 256-bit). Khóa Session
+                            Key này có dải Entropy tuyệt đối và chỉ tồn tại 1 vòng đời (Ephemeral Key) ngăn thuật toán
+                            mò Lookup Memory của hacker.</div>
+                        <textarea readonly id="step3Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step4')">
+                        <h4>Bước 4: Mã hóa khối đối xứng (C = AES_CBC(M, K_s))</h4>
+                        <span class="status-dot default" id="step4Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step4">
+                        <div class="step-explanation">Tạo Vector Khởi Cơ <code>IV</code> 16 byte để mài độ nhiễu loạn
+                            ngẫu nhiên. Sau đó, Block Cipher ở chế độ khóa chéo (CBC) nhận Parameter và đun tin nhắn M
+                            cùng <code>IV</code> & <code>K_s</code>. Output văng ra Bản Mã Rác <code>C</code>. Mức độ bẻ
+                            khóa khối này không khả thi (Non-feasibility) trong kỷ nguyên máy tính hiện tại.</div>
+                        <label>IV (16 bytes Initialization Vector):</label>
+                        <input readonly id="step4Iv" class="code-block-small">
+                        <label>Cipher Text C (Bản Mã Output):</label>
+                        <textarea readonly id="step4Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step5')">
+                        <h4>Bước 5: Kapsel trao đổi Cổng Bí Mật (EK = RSA(K_s, PU_Bob))</h4>
+                        <span class="status-dot default" id="step5Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step5">
+                        <div class="step-explanation">Bài toán phân phối khoá là bài toán chết của mật mã lớp Network
+                            học. Ta gỡ rối bằng <strong>Thuật toán bọc khóa (Key Encapsulation)</strong>. Alice nhập
+                            <strong>Khóa Công Khai - Public Key (PU) của Bob</strong> ra, rồi gói cái Khóa AES (ở Bước
+                            3) lọt thỏm vào. Khóa <code>K_s</code> giờ đã biến dạng thành mả khối <code>EK</code>. Cả vũ
+                            trụ lúc này chỉ có CPU trên máy Bob (cầm <code>PR_Bob</code>) mới cạy được vỏ bao này gắp
+                            K_s gốc ra.</div>
+                        <textarea readonly id="step5Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container" style="border: 2px solid #f39c12; outline: 3px solid rgba(243,156,18,0.2);">
+                    <div class="step-header" onclick="toggleStep('step6')">
+                        <h4>Bước 6: Biên dịch Chữ Ký Tín Thực (S = Sign_RSA(h, PR_Alice))</h4>
+                        <span class="status-dot default" id="step6Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step6">
+                        <div class="step-explanation">
+                            Đưa <strong>Khóa Bí Mật cá nhân (Private Key) của Alice</strong> thực hiện phép toán Signature trên Mã Băm <code>h</code> sinh ra Chữ Ký Mã Lệnh <code>S</code>. Định dạng Padding ở Node là PKCS1/PSS. 
+                            <br><br><strong style="color:#e74c3c">[ VAI TRÒ CHỐNG TAMPER ATTACK ]</strong> Kẻ gian có thể giả danh chĩa sửa gói tin mã hóa Cipher của Alice vì nó chạy lộ thiên trên dây cáp, chèn một <code>M</code> giả vào nhưng lại bị đánh gục hoàn toàn vì <strong>KHÔNG THỂ NÀO làm giả được bộ Chữ Ký S</strong> do thiếu Private Key gốc của chủ nhân.
+                        </div>
+                        <textarea readonly id="step6Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <h3 class="side-title" style="color:#27ae60"><i class="fas fa-download"></i> Phase 2: Receiver &
+                    Zero-Trust Verification</h3>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step7')">
+                        <h4>Bước 7: Rã khối phong bao tải RSA (K_s = Decrypt_RSA(EK, PR_Bob))</h4>
+                        <span class="status-dot default" id="step7Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step7">
+                        <div class="step-explanation">Thread Máy chủ Bob nhận gói Header. 1 tiến trình tiêm thuật toán
+                            giải RSA chạy. Bob bơm <strong>Khóa Sinh Tử nội bộ (Private Key PR)</strong> của mình vào
+                            C++ Decrypter. Boom! Trích lược ngược lại được Phiên Khóa Đối Xứng Session Key
+                            <code>K_s</code> nguyên thủy thành công giống in hệt Bước 3. </div>
+                        <textarea readonly id="step7Data" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container">
+                    <div class="step-header" onclick="toggleStep('step8')">
+                        <h4>Bước 8: Khôi phục Dữ Liệu Tầng Ứng Dụng (M = Decrypt(C) -> h' = SHA-256(M))</h4>
+                        <span class="status-dot default" id="step8Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step8">
+                        <div class="step-explanation">Bơm <code>K_s</code> (từ Bức 7), kèm <code>IV</code> vào Cấu trúc
+                            liên kết AES Decipher. Tịnh tiến xé vòng C cạch cạch nhả ra lại Khối Payload Mạch ứng dụng
+                            <code>M'</code> (Bản Plaintext). CPU Bob ngay lập tức gọi hàm băm xả thẳng một tia Crossover
+                            mã <code>M'</code> tạo thành mã Băm Tự Tính thứ 2 trên máy: gọi là <code>h'</code>. (Đề
+                            phòng mã h gốc trên cáp bị Hacker thay).</div>
+                        <label>M' (Plain Decrypted Application String):</label>
+                        <textarea readonly id="step8Msg" class="code-block"></textarea>
+                        <label>h' (Checksum Băm Tự Hệ Thống Bob Nén Lại):</label>
+                        <textarea readonly id="step8Hash" class="code-block"></textarea>
+                    </div>
+                </div>
+
+                <div class="step-container" style="border: 2px solid #e74c3c; outline: 3px solid rgba(231,76,60,0.2);">
+                    <div class="step-header" onclick="toggleStep('step9')">
+                        <h4>Bước 9: Khám Xét Đối Mệnh Trọng Lượng O(1) (Verify(S, PU_Alice) == h' ?)</h4>
+                        <span class="status-dot default" id="step9Status"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="step-content" id="step9">
+                        <div class="step-explanation">
+                            Thẩm Phán Verify: Trình xác minh móc <strong>Khóa Công Khai (PU) của nhà đài Alice</strong> bung cái Chữ Ký nện điện tử <code>S</code> do cáp gửi qua (Bức 6). Mã lòi ra lập tức trả về một khối String Mã Băm Gốc là <code>h_gốc</code>. Thuật đối chiếu O(1) chạy so sánh <code>h_gốc === h'</code>. 
+                            <br><br><strong style="color:#e74c3c">[ VERIFICATION LOGIC ]</strong> Nếu trùng khớp Từng Hex 100% -> Đóng Dấu SAFE an toàn thả luồng mạng xuất ra thiết lập UI View. Ngược lại, giả thiết đứt dù đoạn cáp có 1 cọng cáp sai hay Hacker vặn lệch bit (Tamper) -> <strong>Hệ thống Trác Tuyệt văng Báo Động Đỏ, Hủy Socket Dữ Liệu!</strong>
+                        </div>
+                        
+                        <div class="hash-compare-container">
+                            <div class="hash-compare-row">
+                                <span class="hash-title"><i class="fas fa-check-circle" style="color:#2ecc71"></i> Mã Băm h_gốc (Bóc tách an toàn từ Chữ ký S bằng Alice Public Key):</span>
+                                <div id="compareHashOriginal" class="hash-value hash-match">Đang chờ tín hiệu mạng...</div>
+                            </div>
+                            <div class="hash-compare-row" style="margin-top: 10px;">
+                                <span class="hash-title"><i class="fas fa-robot" style="color:#3498db"></i> Mã Băm h' (Hệ thống Bob Tự Trích Đo lại từ tệp Cipher trên cáp):</span>
+                                <div id="compareHashCalculated" class="hash-value hash-match">Đang tĩnh lặng vắng lệnh...</div>
+                            </div>
+                        </div>
+
+                        <div id="step9Result" class="verification-box" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/advanced-mode.js"></script>
+    <script>
+        function toggleStep(id) {
+            const content = document.getElementById(id);
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
+        function copyToClipboard(id, btn) {
+            const copyText = document.getElementById(id);
+            if (!copyText || !copyText.value) return;
+            copyText.select();
+            document.execCommand("copy");
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                btn.style.backgroundColor = '#2ecc71';
+                btn.style.color = 'white';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.backgroundColor = '#e2e8f0';
+                    btn.style.color = 'black';
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+
+</html>
